@@ -11,22 +11,9 @@ var events = {};
 // format() returns string
 var currentHour = parseInt(moment().format("H"));
 
-// time blocks COLOR CODED to indicate past, present, or future
-var createEvent = function (eventText, eventTime) {
-    var eventLi = $("<li>")
-        .addClass("time-block");
-
-    var eventP = $("<p>")
-        .addClass("description")
-        .text(eventText);
-
-
-    // append p element to parent li
-    eventLi.append(eventP);
-};
-
+// refresh page, saved events persist
 var loadEvents = function () {
-    events = JSON.parse(localStorage.getItem("events"));
+    events = JSON.parse(localStorage.getItem("events") || []);
 
     if (!events) {
         events = []
@@ -43,14 +30,9 @@ var saveEvents = function () {
     localStorage.setItem("events", JSON.stringify(events));
 }
 
-// refresh page, saved events persist
-
-
-
 var updateEvent = function () {
     var tempArr = [];
     $(this)
-        .children()
         .each(function () {
             tempArr.push({
                 text: $(this)
@@ -58,7 +40,7 @@ var updateEvent = function () {
                     .text()
                     .trim(),
                 time: $(this)
-                    .find("h4")
+                    .find("id")
                     .text()
                     .trim()
             });
@@ -66,13 +48,7 @@ var updateEvent = function () {
     saveEvents();
 }
 
-var auditEvent = function (eventEl) {
-    var time = $(eventEl)
-        .find("textarea")
-        .text()
-        .trim();
-};
-
+// time blocks COLOR CODED to indicate past, present, or future
 $("textarea").each(function() {
     var $this = $(this);
     var id = parseInt($this.attr("id"));
@@ -89,23 +65,21 @@ $("textarea").each(function() {
 });
 
 // click on time block, enter event
-$("textarea .saveBtn").click(function () {
-    var eventText = $("textarea").val();
-    var eventTime = $("h4").val();
+$("button.saveBtn").click(function () {
+    // $(this) current button being clicked
+    var $element = $(this).siblings("textarea");
+    // get time via id attribute
+    var id = $element.attr("id");
+    // get text content via $.val()
+    var text = $element.val();
 
-    if (eventText && eventTime) {
-        createEvent(eventText, eventTime, "update");
-
-        events.update.push({
-            text: eventText,
-            time: eventTime
-        });
-
-        saveEvents();
+    if (id && text !== "") {
+        events.push({});
     }
+    saveEvents();
 });
 
-$("textarea").on("click", "textarea", function() {
+$("textarea").on("click", function() {
     var text = $(this)
     .text()
     .trim();
@@ -137,12 +111,6 @@ $("textarea").on("blur", "textarea", function() {
 });
 
 loadEvents();
-
-setInterval(function() {
-    $("textarea").each(function() {
-        auditEvent();
-    });
-}, (1000 * 60) *60);
 
 
 
