@@ -8,8 +8,8 @@ var blockText = $("<p>").addClass("description");
 timeBlock.append(blockText);
 
 var events = {};
-var times = [];
-var currentHour = moment().format("LT");
+// format() returns string
+var currentHour = parseInt(moment().format("H"));
 
 // time blocks COLOR CODED to indicate past, present, or future
 var createEvent = function (eventText, eventTime) {
@@ -43,6 +43,10 @@ var saveEvents = function () {
     localStorage.setItem("events", JSON.stringify(events));
 }
 
+// refresh page, saved events persist
+
+
+
 var updateEvent = function () {
     var tempArr = [];
     $(this)
@@ -67,21 +71,25 @@ var auditEvent = function (eventEl) {
         .find("textarea")
         .text()
         .trim();
-
-    var currentTime = moment();
-
-    if (moment().isAfter(currentTime)) {
-        $(eventEl).addClass("future");
-    } else if (moment().isBefore(currentTime)) {
-        $(eventEl).addClass("past");
-    } else if (moment().is(currentTime)) {
-        $(eventEl).addClass("present");
-    }
 };
 
+$("textarea").each(function() {
+    var $this = $(this);
+    var id = parseInt($this.attr("id"));
+
+    if (id < currentHour) {
+        $(this).addClass("past");
+    }
+    if (id > currentHour) {
+        $(this).addClass("future");
+    }
+    if (id === currentHour) {
+        $(this).addClass("present");
+    }
+});
 
 // click on time block, enter event
-$("description .saveBtn").click(function () {
+$("textarea .saveBtn").click(function () {
     var eventText = $("textarea").val();
     var eventTime = $("h4").val();
 
@@ -97,7 +105,7 @@ $("description .saveBtn").click(function () {
     }
 });
 
-$(".description").on("click", "textarea", function() {
+$("textarea").on("click", "textarea", function() {
     var text = $(this)
     .text()
     .trim();
@@ -110,7 +118,7 @@ $(".description").on("click", "textarea", function() {
     textInput.trigger("focus");
 });
 
-$(".description").on("blur", "textarea", function() {
+$("textarea").on("blur", "textarea", function() {
     var text = $(this)
     .val();
 
@@ -131,18 +139,12 @@ $(".description").on("blur", "textarea", function() {
 loadEvents();
 
 setInterval(function() {
-    $(".description").each(function() {
+    $("textarea").each(function() {
         auditEvent();
     });
 }, (1000 * 60) *60);
 
 
-
-
-
-
-
-// refresh page, saved events persist
 
 
 
