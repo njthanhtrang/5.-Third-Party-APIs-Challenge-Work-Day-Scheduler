@@ -7,19 +7,22 @@ var timeBlock = $(".time-block").addClass("row");
 var blockText = $("<p>").addClass("description");
 timeBlock.append(blockText);
 
-var events = {};
 // format() returns string
 var currentHour = parseInt(moment().format("H"));
 
+
+var events = [];
+
 // refresh page, saved events persist
 var loadEvents = function () {
-    events = JSON.parse(localStorage.getItem("events") || []);
+    events = JSON.parse(localStorage.getItem("events") || "[]");
 
-    if (!events) {
-        events = []
-    };
+    var eventText = document.querySelector("textarea").val;
+    $("textarea").append(eventText);
 
+    // loop over events object properties
     $.each(events, function (arr) {
+        // loop over sub-array
         arr.forEach(function (event) {
             createEvent(event.text, event.time);
         });
@@ -30,26 +33,25 @@ var saveEvents = function () {
     localStorage.setItem("events", JSON.stringify(events));
 }
 
-var updateEvent = function () {
-    var tempArr = [];
-    $(this)
-        .each(function () {
-            tempArr.push({
-                text: $(this)
-                    .find("textarea")
-                    .text()
-                    .trim(),
-                time: $(this)
-                    .find("id")
-                    .text()
-                    .trim()
-            });
-        });
-    saveEvents();
-}
+// var updateEvent = function () {
+//     var tempArr = [];
+//     $(this).each(function () {
+//             tempArr.push({
+//                 text: $(this)
+//                     .find("textarea")
+//                     .text()
+//                     .trim(),
+//                 time: $(this)
+//                     .find("id")
+//                     .text()
+//                     .trim()
+//             });
+//         });
+//     saveEvents();
+// }
 
 // time blocks COLOR CODED to indicate past, present, or future
-$("textarea").each(function() {
+$("textarea").each(function () {
     var $this = $(this);
     var id = parseInt($this.attr("id"));
 
@@ -74,38 +76,48 @@ $("button.saveBtn").click(function () {
     var text = $element.val();
 
     if (id && text !== "") {
-        events.push({});
+        events.push({
+            text: eventText,
+            time: eventTime
+        });
+
+        saveEvents();
     }
-    saveEvents();
 });
 
-$("textarea").on("click", function() {
+$(".saveBtn").hover(function() {
+    $(this).addClass("saveBtn i:hover");
+});
+
+$("textarea").on("click", function () {
     var text = $(this)
-    .text()
-    .trim();
+        .text()
+        .trim();
 
     var textInput = $("<textarea>")
-    .addClass("description")
-    .val(text);
+        .addClass("description")
+        .val(text);
     $(this).replaceWith(textInput);
 
     textInput.trigger("focus");
 });
 
-$("textarea").on("blur", "textarea", function() {
+$("textarea").on("blur", "textarea", function () {
     var text = $(this)
-    .val();
+        .val();
 
-    var status = $(this)
-    .closest("h4")
-    .val();
+    var time = $(this)
+        .closest("textarea")
+        .attr("id")
+        .val();
 
-    events[status].text = text;
+    events[time].text = text;
     saveEvents();
 
+    // recreate textarea element
     var editedEvent = $("<textarea>")
-    .addClass("description")
-    .text(text);
+        .addClass("description")
+        .text(text);
 
     $(this).replaceWith(editedEvent);
 });
