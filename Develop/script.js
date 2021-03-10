@@ -17,7 +17,7 @@ var events = [];
 var loadEvents = function () {
     events = JSON.parse(localStorage.getItem("events") || "[]");
 
-    var eventText = document.querySelector("textarea").val;
+    var eventText = $("textarea").val();
     $("textarea").append(eventText);
 
     // loop over events object properties
@@ -33,22 +33,21 @@ var saveEvents = function () {
     localStorage.setItem("events", JSON.stringify(events));
 }
 
-// var updateEvent = function () {
-//     var tempArr = [];
-//     $(this).each(function () {
-//             tempArr.push({
-//                 text: $(this)
-//                     .find("textarea")
-//                     .text()
-//                     .trim(),
-//                 time: $(this)
-//                     .find("id")
-//                     .text()
-//                     .trim()
-//             });
-//         });
-//     saveEvents();
-// }
+var updateEvent = function () {
+    var tempArr = [];
+    $(this).each(function () {
+            tempArr.push({
+                text: $(this)
+                    .find("textarea")
+                    .text()
+                    .trim(),
+                time: $(this)
+                    .find("id")
+                    .val()
+            });
+        });
+    saveEvents();
+}
 
 // time blocks COLOR CODED to indicate past, present, or future
 $("textarea").each(function () {
@@ -80,14 +79,14 @@ $("button.saveBtn").click(function () {
             text: eventText,
             time: eventTime
         });
-
         saveEvents();
     }
 });
 
 $(".saveBtn").hover(function() {
-    $(this).addClass("saveBtn i:hover");
+    $(this).addClass("saveBtn:hover");
 });
+
 
 $("textarea").on("click", function () {
     var text = $(this)
@@ -100,6 +99,7 @@ $("textarea").on("click", function () {
     $(this).replaceWith(textInput);
 
     textInput.trigger("focus");
+
 });
 
 $("textarea").on("blur", "textarea", function () {
