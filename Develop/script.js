@@ -10,43 +10,41 @@ timeBlock.append(blockText);
 // format() returns string
 var currentHour = parseInt(moment().format("H"));
 
-
 var events = {};
 
 // refresh page, saved events persist
 var loadEvents = function () {
-    events = JSON.parse(localStorage.getItem("events") || "{}");
+    events = JSON.parse(localStorage.getItem("events") || {});
 
-    var eventText = $("textarea").val();
+    for (var i = 0; i < events.length; i++) {
+        var eventText = $("<textarea>");
+        eventText.text(events[i]);
+    }
     $("textarea").append(eventText);
 
-    // loop over events object properties
-    $.each(events, function (arr) {
-        // loop over sub-array
-        arr.forEach(function (event) {
-            createEvent(event.text, event.time);
-        });
-    });
+    // // loop over events object properties
+    // $.each(events, function () {
+    //     // loop over sub-array
+    //     arr.forEach(function (event) {
+    //         createEvent(event.text, event.time);
+    //     });
+    // });
 };
-// click save button, save event text in local storage
-var saveEvents = function () {
-    localStorage.setItem("events", JSON.stringify(events));
-}
 
 var updateEvent = function () {
     var tempArr = [];
     $(this).each(function () {
-            tempArr.push({
-                text: $(this)
-                    .find("textarea")
-                    .text()
-                    .trim(),
-                time: $(this)
-                    .find("id")
-                    .val()
-            });
+        tempArr.push({
+            text: $(this)
+                .find("textarea")
+                .text()
+                .trim(),
+            time: $(this)
+                .find("id")
+                .val()
         });
-    saveEvents();
+    });
+    loadEvents();
 }
 
 // time blocks COLOR CODED to indicate past, present, or future
@@ -65,19 +63,23 @@ $("textarea").each(function () {
     }
 });
 
-// click on time block, enter event
-$("button.saveBtn").click(function () {
+// click save button to update event
+$("button.saveBtn").click(function (event) {
+    event.preventDefault();
+
     // $(this) current button being clicked
     var $element = $(this).siblings("textarea");
     // get time via id attribute
-    var id = $element.attr("id");
+    var time = $element.attr("id");
     // get text content via $.val()
-    var text = $element.val();
+    var text = $element.val().trim();
 
-    var events = JSON.parse(localStorage.getItem("events") || "{}");
-    events[id] = text;
+    events[time] = text;
+    events.push(text);
 
-    saveEvents(events);
+    loadEvents(events);
+
+    localStorage.setItem("events", JSON.stringify(events));
     // if (id && text !== "") {
     //     events.push({
     //         text, time
@@ -86,12 +88,8 @@ $("button.saveBtn").click(function () {
     // }
 });
 
-$(".saveBtn").hover(function() {
+$(".saveBtn").hover(function () {
     $(this).addClass("saveBtn:hover");
 });
 
 loadEvents();
-
-
-
-
