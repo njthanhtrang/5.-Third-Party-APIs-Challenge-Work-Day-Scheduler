@@ -11,11 +11,11 @@ timeBlock.append(blockText);
 var currentHour = parseInt(moment().format("H"));
 
 
-var events = [];
+var events = {};
 
 // refresh page, saved events persist
 var loadEvents = function () {
-    events = JSON.parse(localStorage.getItem("events") || "[]");
+    events = JSON.parse(localStorage.getItem("events") || "{}");
 
     var eventText = $("textarea").val();
     $("textarea").append(eventText);
@@ -74,57 +74,23 @@ $("button.saveBtn").click(function () {
     // get text content via $.val()
     var text = $element.val();
 
-    if (id && text !== "") {
-        events.push({
-            text: eventText,
-            time: eventTime
-        });
-        saveEvents();
-    }
+    var events = JSON.parse(localStorage.getItem("events") || "{}");
+    events[id] = text;
+
+    saveEvents(events);
+    // if (id && text !== "") {
+    //     events.push({
+    //         text, time
+    //     });
+    //     saveEvents();
+    // }
 });
 
 $(".saveBtn").hover(function() {
     $(this).addClass("saveBtn:hover");
 });
 
-
-$("textarea").on("click", function () {
-    var text = $(this)
-        .text()
-        .trim();
-
-    var textInput = $("<textarea>")
-        .addClass("description")
-        .val(text);
-    $(this).replaceWith(textInput);
-
-    textInput.trigger("focus");
-
-});
-
-$("textarea").on("blur", "textarea", function () {
-    var text = $(this)
-        .val();
-
-    var time = $(this)
-        .closest("textarea")
-        .attr("id")
-        .val();
-
-    events[time].text = text;
-    saveEvents();
-
-    // recreate textarea element
-    var editedEvent = $("<textarea>")
-        .addClass("description")
-        .text(text);
-
-    $(this).replaceWith(editedEvent);
-});
-
 loadEvents();
-
-
 
 
 
