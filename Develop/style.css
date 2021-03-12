@@ -33,7 +33,9 @@ textarea{
 .row {
   white-space: pre-wrap;
   height: 80px;
-  border-top: 1px solid white;;
+  border-top: 1px solid white;
+  display: flex;
+  justify-content: center;
 }
 
 .hour {
@@ -72,4 +74,11 @@ textarea{
   font-size: 20px;
   transition: all .3s ease-in-out;
   color: black;
+}
+
+@media screen and (max-width: 768px) {
+  .row, .description, .time-block, .hour, .saveBtn {
+    display: inline;
+    flex-wrap: wrap;
+  }
 }
