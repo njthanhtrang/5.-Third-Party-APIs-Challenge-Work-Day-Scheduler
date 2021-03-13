@@ -10,25 +10,15 @@ timeBlock.append(blockText);
 // format() returns string
 var currentHour = parseInt(moment().format("H"));
 
-var events = [];
-
 // refresh page, saved events persist
 var loadEvents = function (timeSlots) {
-    events = [];
-    // array of objects
-    events = JSON.parse(localStorage.getItem("events")) || [];
-    // console.log(typeof tempEvents);
+    // console.log(localStorage);
 
     for (var i = 0; i < timeSlots.length; i++) {
         // console.log(timeSlots[i]);
-
-        // find is a for loop
-
-        // find the first value of time that is equal to value of time in index of timeSlots
-        var event = events.find(x => x.time === timeSlots[i].time);
-        if (event) {
-            // 
-            timeSlots[i].text.val(event.text);
+        let time = localStorage.getItem(parseInt(timeSlots[i].time));
+        if (time) {
+            timeSlots[i].text.val(time);
         }
     }
 };
@@ -62,7 +52,7 @@ $("textarea").each(function () {
 });
 
 // click save button to add value to events
-$("button.saveBtn").click(function (event) {
+$("button.saveBtn").click(function (event, loadEvents) {
     event.preventDefault();
 
     // $(this) current button being clicked
@@ -70,25 +60,16 @@ $("button.saveBtn").click(function (event) {
     // console.log($element);
     // get time via id attribute
     var time = $element.attr("id");
-    console.log(time);
+    // console.log(time);
     // get text content via $.val()
     var text = $element.val().trim();
-    console.log(text);
-    console.log(events);
+    // console.log(text);
 
     // save events to localStorage
     if (time && text !== "") {
-        events.push({
-            time, text
-        });
-        localStorage.clear();
-        localStorage.setItem("events", JSON.stringify(events));
-
-        // Find value in array??
-        // events[i].text=text;
+        localStorage.setItem(time, text);
     };
 });
-
 
 $(".saveBtn").hover(function () {
     $(this).addClass("saveBtn:hover");

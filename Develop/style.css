@@ -67,18 +67,10 @@ textarea{
   border-bottom-right-radius: 15px;
   background-color: #06AED5;
   color: white;
-  padding: 30px;
 }
 
 .saveBtn:hover {
   font-size: 20px;
   transition: all .3s ease-in-out;
   color: black;
-}
-
-@media screen and (max-width: 768px) {
-  .row, .description, .time-block, .hour, .saveBtn {
-    display: inline;
-    flex-wrap: wrap;
-  }
 }
