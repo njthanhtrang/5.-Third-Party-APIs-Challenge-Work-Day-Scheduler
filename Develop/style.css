@@ -34,8 +34,6 @@ textarea{
   white-space: pre-wrap;
   height: 80px;
   border-top: 1px solid white;
-  display: flex;
-  justify-content: center;
 }
 
 .hour {
@@ -43,7 +41,6 @@ textarea{
   color: #000000;
   border-top: 1px dashed #000000;
   padding: 20px;
-  align-content: center;
 }
 
 .past {
